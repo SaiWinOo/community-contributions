@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Channel;
 use App\Models\CommunityLinks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,15 +11,18 @@ class CommunityLinkController extends Controller
 {
     public function index()
     {
-        $links = CommunityLinks::latest()->get();
-        return view('Community.index',compact('links'));
+        $channels = Channel::orderBy('title', 'asc')->get();
+        $links = CommunityLinks::where('approved', 1)->latest()->get();
+        return view('Community.index', compact('links', 'channels'));
     }
 
     public function store(Request $request)
     {
+
         $request->validate([
-           'title' => 'required',
-           'link' => 'required|active_url',
+            'channel_id' => 'required|exists:channels,id',
+            'title' => 'required',
+            'link' => 'required|unique:community_links',
         ]);
         CommunityLinks::from(Auth::user())->attribute($request->all());
         return back();

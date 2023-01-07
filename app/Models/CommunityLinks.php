@@ -10,22 +10,36 @@ class CommunityLinks extends Model
 {
     use HasFactory;
     protected $fillable = ['user_id', 'title', 'link', 'channel_id'];
-    public function creator()
-    {
-        return $this->belongsTo(User::class,'user_id');
-    }
+
 
     public static function from(User $user)
     {
         $link = new static;
         $link->user_id = Auth::id();
-        $link->channel_id = 1;
+        if($user->isTrusted()){
+            $link->approved();
+        }
         return $link;
+    }
+
+    public function approved()
+    {
+         $this->approved = true;
     }
 
     public function attribute($attributes)
     {
         return $this->fill($attributes)->save();
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class);
     }
 
 }
