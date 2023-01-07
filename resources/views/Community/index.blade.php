@@ -2,6 +2,7 @@
     <div class='grid grid-cols-3 gap-4 just max-w-5xl mx-auto'>
         <div class=" col-span-2  ">
             <h1 class="text-3xl my-5 dark:text-gray-50 ">Contributions</h1>
+
             @if(!$links->isEmpty())
                 <ul>
                 </ul>
