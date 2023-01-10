@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -45,5 +46,16 @@ class User extends Authenticatable
     public function isTrusted()
     {
         return $this->trusted;
+    }
+
+
+    public function votedFor(CommunityLinks $link)
+    {
+        return $link->votes->contains('user_id', auth()->id());
+    }
+
+    public function votes()
+    {
+        return $this->belongsToMany(CommunityLinks::class,'community_links_votes')->withTimestamps();
     }
 }

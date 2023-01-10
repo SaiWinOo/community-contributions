@@ -16,7 +16,7 @@ class CommunityLinks extends Model
 
     public function scopeForChannel($query, $channel)
     {
-        if($channel){
+        if ($channel) {
             return $query->where('channel_id', $channel->id);
         }
         return $query;
@@ -59,11 +59,11 @@ class CommunityLinks extends Model
 
     protected function hasAlreadyBeenSubmitted($link)
     {
-        return static::where('link', $link )->first();
+        return static::where('link', $link)->first();
     }
 
     public function votes()
     {
-        return $this->hasMany(CommunityLinksVotes::class);
+        return $this->hasMany(CommunityLinksVotes::class, 'community_link_id');
     }
 }

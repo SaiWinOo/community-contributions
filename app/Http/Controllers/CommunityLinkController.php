@@ -14,8 +14,14 @@ class CommunityLinkController extends Controller
     public function index(Channel $channel = null)
     {
         $channels = Channel::orderBy('title', 'asc')->get();
-        $links = CommunityLinks::forChannel($channel)->where('approved', 1)->latest('updated_at')->paginate(3);
-        return view('Community.index', compact('links', 'channels','channel'));
+        $orderBy = request()->exists('popular') === true  ? 'votes_count': 'updated_at' ;
+        $links = CommunityLinks::withCount('votes')->with('votes', 'creator')
+            ->forChannel($channel)
+            ->where('approved', 1)
+            ->orderBy($orderBy, 'desc')
+            ->paginate(3)
+            ->withQueryString();
+        return view('Community.index', compact('links', 'channels', 'channel'));
     }
 
     public function store(Request $request)
@@ -38,7 +44,7 @@ class CommunityLinkController extends Controller
             }
 
         } catch (CommunityLinkAlreadySubmitted $e) {
-            Session::flash('success',"The link has already been submitted. We'll bring it to the top instead!");
+            Session::flash('success', "The link has already been submitted. We'll bring it to the top instead!");
         }
 
         return back();

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CommunityLinkController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VotesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,10 +24,12 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('community',[CommunityLinkController::class,'index'])->name('Community.index');
+
 Route::middleware('auth')->group(function () {
-    Route::get('community',[CommunityLinkController::class,'index'])->name('Community.index');
     Route::post('community',[CommunityLinkController::class,'store'])->name('Community.store');
     Route::get('community/{channel}',[CommunityLinkController::class,'index'])->name('Community.channel');
+    Route::post('/votes/{link}', [VotesController::class,'store'])->name('votes.store');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

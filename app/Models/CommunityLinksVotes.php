@@ -9,5 +9,14 @@ class CommunityLinksVotes extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['user_id', 'community_link_id'];
+
+    public function toggle()
+    {
+        if($this->exists){
+            return $this->delete();
+        }
+        return $this->save();
+    }
 
 }
